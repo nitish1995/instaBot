@@ -88,6 +88,7 @@ def get_recent_like():
             for item in info['data']:
                 try:                                                                                                    # Handling null caption.
                     text = item['caption']['text']
+                    text = text.encode('utf-8')
                 except:
                     text = "No caption."
                 print "user: " + (Fore.BLUE + item['user']['full_name']) + Style.RESET_ALL + '. caption text: ' + (Fore.GREEN + text)
@@ -182,6 +183,7 @@ def all_post(post_details):
     for item in post_details['data']:                                                                                   # iterating over all the posts.
         try:
             text = item['caption']['text']
+            text = text.encode('utf-8')
         except:
             text = 'No_caption.'
         print  "%d. "% (i) + "Caption_TEXT: " + (Fore.BLUE + text) + Style.RESET_ALL + " Total_likes: " + (Fore.GREEN + '%d' % item['likes']['count'])
@@ -324,7 +326,7 @@ def get_users_post(user_name):
 #.....................................................................................
             else:
                 print "There are more than one recent post. Which one you want to select: "
-                selection = take_input('number',' 1. To see all the post. \n 2. For most recent post. \n 3. For post with minimum likes. \n 4. For post with maximum likes \n 5. For post containing particular keyword.')
+                selection = take_input('number',' 1. To see all the post. \n 2. For most recent post. \n 3. For post with minimum likes. \n 4. For post with maximum likes \n 5. For post containing particular keyword: \n')
                 if selection is not None:                                                                               # Handling if more than one post by asking user.
                     if selection == 1:
                         return all_post(post_details)
@@ -377,12 +379,15 @@ def get_comments(username):
     if media_id is not None:
         req_method = 'get'
         trail_url = 'media/%s/comments?access_token=%s' % (media_id,ACCESS_TOKEN)                                       # Making url for comments request.
-        print "Accessing for comments:"
+        print (Fore.YELLOW + "Accessing for comments: ")
+        print (Style.RESET_ALL)
         info = fetch_data(req_method,trail_url)                                                                         # Fetching comments.
         if info is not None:
             if len(info['data']):                                                                                       # printing comments.
                 for item in info['data']:
-                    print "FROM: " + (Fore.BLUE +item['from']['full_name']) + Style.RESET_ALL + ". TEXT: " + (Fore.GREEN + item['text'])
+                    text = item['text']
+                    text = text.encode('utf-8')
+                    print "FROM: " + (Fore.BLUE +item['from']['full_name']) + Style.RESET_ALL + ". COMMENT: " + (Fore.GREEN + text)
                     print (Style.RESET_ALL)
                 print (Fore.GREEN + "All comments printed successfully.")
                 print (Style.RESET_ALL)
@@ -404,17 +409,101 @@ def post_a_comment(username):
     media_id = get_users_post(username)                                                                                 # Getting post for comment.
     if media_id is not None:
         comment_text = take_input('string','your_comment:')                                                             # Asking user for comment.
+        comment_text = comment_text.encode('utf-8')
         if comment_text is not None:
             req_method = 'post'
             trail_url = 'media/%s/comments' % (media_id)                                                                # Forming for post request.
             payload = {"access_token" : ACCESS_TOKEN, "text" : comment_text}
             print (Fore.YELLOW + "Making comment on post: ")
+            print (Style.RESET_ALL)
             info = fetch_data(req_method,trail_url,payload)                                                             # Posting comment.
             if info is not None:
                 print (Fore.GREEN + "Successfully added a new comment!.")                                               # printing Message.
+                print (Style.RESET_ALL)
             else:
                 print (Fore.RED + "Unable to add comment. Try again!")
+                print (Style.RESET_ALL)
 #End of post_a_comment..................................................................................................
+
+
+
+
+
+#This will find and list all location near given coordinates.(no parameter and return selected location.)
+#.......................................................................................................................
+def location_finder():
+    print "Enter the location coordinates."                                                                             # Asking for latitude and longitude.
+    lat = take_input('float','Enter latitude coordinate.')
+    if lat is not None:
+        lng = take_input('float','Enter longitude coordinate.')
+        if lng is not None:
+            req_method = 'get'
+            trail_url = 'locations/search?lat=%s&lng=%s&access_token=%s' %(lat,lng,ACCESS_TOKEN)                        # Forming trail url for locations.
+            print (Fore.YELLOW + "Requesting for locations: ")
+            print (Style.RESET_ALL)
+            info = fetch_data(req_method,trail_url)                                                                     # Fetching locations.
+            if info is not None:
+                if len(info['data']):
+                    print (Fore.GREEN + "Locations Nearby: ")                                                           # Printing nearby location.
+                    print (Style.RESET_ALL)
+                    i = 1
+                    for item in info['data']:
+                        location = item['name']
+                        location = location.encode('utf-8')
+                        print "%d. " % i + location
+                        i += 1
+                    selection = take_input('number','Select one location.')                                             # Asking to select one location.
+                    if selection is not None:
+                        if 0 < selection <= len(info['data']):                                                          # Handling invalid cases.
+                            selection = selection - 1
+                            location_id = info['data'][selection]['id']
+                            return location_id
+                        else:
+                            print (Fore.RED + "Please select from the given options.")
+                            print (Style.RESET_ALL)
+                else:
+                    print (Fore.RED + "Sorry we can not found any popular location nearby.")
+                    print (Style.RESET_ALL)
+    return None
+#End of location finder.................................................................................................
+
+
+
+
+
+#natural_calmity will get image in particular location with natural_calamity(no parameter, return images)
+#.......................................................................................................................
+def natural_calamity():
+    location = location_finder()                                                                                        # Asking for one location.
+    images = []
+    if location is not None:
+        req_method = 'get'
+        trail_url = 'locations/%s/media/recent?access_token=%s' % (location,ACCESS_TOKEN)                               # Forming url for getting images.
+        images_data = fetch_data(req_method,trail_url)
+
+        if images_data is not None:
+            if len(images_data['data']):
+                index = 0
+                for image in images_data['data']:                                                                       # Iterating over all the images.
+                    try:
+                        text = image['caption']['text']
+                        text = text.encode('utf-8')
+                        text = text.upper()
+                    except:
+                        text = ''
+                    for item1 in disasters:                                                                             # Searching for keyword.
+                        if text.find(item1) != -1:
+                            images.append(image['id'])
+                            download_post(images_data,index)                                                            # Downloading post with natural calamity.
+                    index += 1
+                print (Fore.GREEN + "Images with Natural Calamity downloaded successfully.")
+                print (Style.RESET_ALL)
+                return images
+            else:
+                print (Fore.RED + "No images for this location")
+                print (Style.RESET_ALL)
+    return None
+#End of natural_calamity method.........................................................................................
 
 
 
@@ -433,9 +522,11 @@ print (Style.RESET_ALL)
 #if username is not None:
 
 #    user_info(username)                                                                                                # will return user info with the get_user_id.
-#    print get_users_post(username)
+#   print get_users_post(username)
 #    like_a_post(username)
 #    print get_comments(username)
 #    post_a_comment(username)
 #print get_recent_like()
+#print location_finder()
+#print natural_calamity()
 #End of Photobot application............................................................................................
