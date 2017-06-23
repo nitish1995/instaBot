@@ -20,8 +20,8 @@
       <file leaf-file-name="instabot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/instabot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12750">
-              <caret line="510" column="0" lean-forward="true" selection-start-line="510" selection-start-column="0" selection-end-line="510" selection-end-column="0" />
+            <state relative-caret-position="6500">
+              <caret line="260" column="37" lean-forward="false" selection-start-line="260" selection-start-column="37" selection-end-line="260" selection-end-column="37" />
               <folding>
                 <element signature="e#25#182#0" expanded="true" />
               </folding>
@@ -216,7 +216,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1060" extended-state="7" />
+    <frame x="-9" y="-9" width="1938" height="1060" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -459,6 +459,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/keys.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="67" lean-forward="false" selection-start-line="0" selection-start-column="67" selection-end-line="0" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/extra_method.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3450">
@@ -469,18 +477,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/keys.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="67" lean-forward="false" selection-start-line="0" selection-start-column="67" selection-end-line="0" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/instabot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12750">
-          <caret line="510" column="0" lean-forward="true" selection-start-line="510" selection-start-column="0" selection-end-line="510" selection-end-column="0" />
+        <state relative-caret-position="6500">
+          <caret line="260" column="37" lean-forward="false" selection-start-line="260" selection-start-column="37" selection-end-line="260" selection-end-column="37" />
           <folding>
             <element signature="e#25#182#0" expanded="true" />
           </folding>

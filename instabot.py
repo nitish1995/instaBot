@@ -8,7 +8,7 @@ from extra_method import take_input, fetch_data, download_post
 init()
 
 #list for disasters for testing natural calamity test.
-disasters = ['AVALANCHES','AVALANCHE','LANDSLIDES','LANDSLIDE','EARTHQUAKES','EARTHQUAKE','SINKHOLES','SINKHOLE','VOLCANIC ERUPTIONS','VOLCANIC ERUPTION','FLOODS','FLOOD','LIMNIC ERUPTIONS','LIMNIC ERUPTION','TSUNAMI','BLIZZARDS','BLIZZARD','CYCLONIC STORMS','CYCLONIC STORM','DROUGHTS','DROUGHT','THUNDERSTORMS','THUNDERSTORM','HAILSTORMS','HAILSTORM','HEAT WAVE','HEAT WAVES','TORNADOES','TORNADOE','WILDFIRES','WILDFIRE','AIRBURST','SOLAR FLARES','SOLAR FLARE']
+disasters = ['KARTING','AVALANCHES','AVALANCHE','LANDSLIDES','LANDSLIDE','EARTHQUAKES','EARTHQUAKE','SINKHOLES','SINKHOLE','VOLCANIC ERUPTIONS','VOLCANIC ERUPTION','FLOODS','FLOOD','LIMNIC ERUPTIONS','LIMNIC ERUPTION','TSUNAMI','BLIZZARDS','BLIZZARD','CYCLONIC STORMS','CYCLONIC STORM','DROUGHTS','DROUGHT','THUNDERSTORMS','THUNDERSTORM','HAILSTORMS','HAILSTORM','HEAT WAVE','HEAT WAVES','TORNADOES','TORNADOE','WILDFIRES','WILDFIRE','AIRBURST','SOLAR FLARES','SOLAR FLARE']
 
 
 
@@ -258,7 +258,7 @@ def most_liked_post(post_details):
         return post_id
 
     return None
-#.......................................................................................................................
+#End of most_liked_post.................................................................................................
 
 
 
@@ -513,20 +513,54 @@ def natural_calamity():
 #.......................................................................................................................
 print (Fore.GREEN + "Welcome to Instabot.")
 print (Style.RESET_ALL)
-#self_info()                                                                                                            #printing my information.
-#print self_id()                                                                                                        #return my id no side effects.
-#print get_own_post()                                                                                                   #download the most recent post of mine and return its id.
-#get_user_id(username)
-                                                                                                                        #will return user id on smart search return list.
-#username = take_input('string','please enter the username')
-#if username is not None:
 
-#    user_info(username)                                                                                                # will return user info with the get_user_id.
-#   print get_users_post(username)
-#    like_a_post(username)
-#    print get_comments(username)
-#    post_a_comment(username)
-#print get_recent_like()
-#print location_finder()
-#print natural_calamity()
+photobot = True
+
+while photobot:                                                                                                         # Printing application main menu and handling.
+    print 'What to you want to do?'
+    selection = take_input('number',' 0. To exit from photobot. \n 1. Print my information.\n 2. Print my user id.\n 3. Download my most recent post.\n 4. Show media recently liked by me.\n 5. Print user information. \n 6. Download user post. \n 7. Like a post. \n 8. Print comments on a post. \n 9. Post a comment. \n 10. Get post with natural calamity.')
+
+    if selection is not None:
+        if selection == 0:
+            photobot = False
+        elif selection == 1:
+            self_info()
+        elif selection == 2:
+            print (Fore.GREEN + self_id())
+            print (Style.RESET_ALL)
+        elif selection == 3:
+            get_own_post()
+        elif selection == 4:
+            get_recent_like()
+        elif selection == 5:
+            username = take_input('string', 'please enter the username: ')
+            if username is not None:
+                user_info(username)
+        elif selection == 6:
+            username = take_input('string', 'please enter the username: ')
+            if username is not None:
+                get_users_post(username)
+        elif selection == 7:
+            username = take_input('string', 'please enter the username: ')
+            if username is not None:
+                like_a_post(username)
+        elif selection == 8:
+            username = take_input('string', 'please enter the username: ')
+            if username is not None:
+                get_comments(username)
+        elif selection == 9:
+            username = take_input('string', 'please enter the username: ')
+            if username is not None:
+                post_a_comment(username)
+        elif selection == 10:
+            images = natural_calamity()
+            if images is not None and len(images):
+                print "Images Ids:" ,images
+            else:
+                print (Fore.RED + "No image found with natural calamity.")
+                print (Style.RESET_ALL)
+        else:
+            print (Fore.RED + "Please choose form the given options.")
+            print (Style.RESET_ALL)
+
 #End of Photobot application............................................................................................
