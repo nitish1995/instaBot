@@ -36,7 +36,7 @@ def take_input(input_type,message):
                 input_data = int(input_data)
                 return input_data
             except:
-                print (Fore.RED + "Please enter a number.")
+                print (Fore.RED + "Please enter an integer.")
                 print (Style.RESET_ALL)
         else:
             print (Fore.RED + "Please don't leave it blank.")

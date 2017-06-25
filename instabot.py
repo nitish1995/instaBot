@@ -192,10 +192,14 @@ def all_post(post_details):
 #..............................................................................................
     selection = take_input('number','Select from above posts. ')                                                        # Asking for selecting one post.
     if selection is not None:
-        selection = selection - 1                                                                                       # converting to zero base index.
-        post_id = download_post(post_details,selection)                                                                 # Calling download post for post_id.
-        if post_id is not None:
-            return post_id
+        if 0 < selection <= len(post_details['data']):
+            selection = selection - 1                                                                                   # converting to zero base index.
+            post_id = download_post(post_details,selection)                                                             # Calling download post for post_id.
+            if post_id is not None:
+                return post_id
+        else:
+            print (Fore.RED + "Please select from given options.")
+            print (Style.RESET_ALL)
 
     return None
 #End of all_post method.................................................................................................
@@ -229,8 +233,19 @@ def minimum_liked_post(post_details):
             likes = item['likes']['count']
             selection = i
         i += 1
+
+    count = 0
+    for item in post_details['data']:
+        if item['likes']['count'] == likes:
+            count += 1
+    if count > 1:
+        print (Fore.RED + "Conflict in minimum liked post. Please see all post.")
+        print (Style.RESET_ALL)
+        post_id = all_post(post_details)
+        selection = None
 #.......................................................................................
-    post_id = download_post(post_details,selection)                                                                     # Calling download post with selection.
+    if selection is not None:
+        post_id = download_post(post_details, selection)                                                                # Calling download post with selection.
     if post_id is not None:
         return post_id
 
@@ -252,8 +267,19 @@ def most_liked_post(post_details):
             likes = item['likes']['count']
             selection = i
         i += 1
+
+    count = 0
+    for item in post_details['data']:
+        if item['likes']['count'] == likes:
+            count += 1
+    if count > 1:
+        print (Fore.RED + "Conflict in most liked post. Please see all post.")
+        print (Style.RESET_ALL)
+        post_id = all_post(post_details)
+        selection = None
 #......................................................................................
-    post_id = download_post(post_details,selection)                                                                     # Calling download post for post id.
+    if selection is not None:
+        post_id = download_post(post_details, selection)                                                                # Calling download post for post id.
     if post_id is not None:
         return post_id
 
@@ -431,7 +457,7 @@ def post_a_comment(username):
 
 #This will find and list all location near given coordinates.(no parameter and return selected location.)
 #.......................................................................................................................
-def location_finder():
+def location_finder1():
     print "Enter the location coordinates."                                                                             # Asking for latitude and longitude.
     lat = take_input('float','Enter latitude coordinate.')
     if lat is not None:
@@ -471,10 +497,46 @@ def location_finder():
 
 
 
+#This will find and list all location near given coordinates.()
+#
+#.......................................................................................................................
+def location_finder():
+    locations = []
+    print "Enter the location coordinates."                                                                             # Asking for location coordinates.
+    lat = take_input('float','Enter latitude coordinate.')
+    if lat is not None:
+        lng = take_input('float','Enter longitude coordinate.')
+        if lng is not None:
+            req_method = 'get'
+            trail_url = 'locations/search?lat=%s&lng=%s&access_token=%s' %(lat,lng,ACCESS_TOKEN)
+            print (Fore.YELLOW + "Requesting for locations: ")
+            print (Style.RESET_ALL)
+            info = fetch_data(req_method,trail_url)                                                                     # Collecting all the locations.
+            if info is not None:
+                if len(info['data']):                                                                                   # Iterating over all the locations.
+                    print "Locations Nearby:"
+                    for item in info['data']:
+                        try:
+                            location = item['name']
+                            location = location.encode('utf-8')
+                            print location
+                        except:
+                            pass
+                        locations.append(item['id'])
+                    return locations
+                else:
+                    print "Sorry we can not found any popular location nearby."
+    return None
+#End of location finder.................................................................................................
+
+
+
+
+
 #natural_calmity will get image in particular location with natural_calamity(no parameter, return images)
 #.......................................................................................................................
-def natural_calamity():
-    location = location_finder()                                                                                        # Asking for one location.
+def natural_calamity1():
+    location = location_finder1()                                                                                        # Asking for one location.
     images = []
     if location is not None:
         req_method = 'get'
@@ -508,6 +570,42 @@ def natural_calamity():
 
 
 
+#
+#.......................................................................................................................
+def natural_calamity():
+    req_method = 'get'
+    locations = location_finder()
+    images = []
+    if locations is not None:
+
+        for item in locations:                                                                                          # Collecting images for particular location.
+            trail_url = 'locations/%s/media/recent?access_token=%s' % (item,ACCESS_TOKEN)
+            print (Fore.YELLOW + "Searching post in this location.")
+            print (Style.RESET_ALL)
+            images_data = fetch_data(req_method,trail_url)
+
+            if images_data is not None:
+                if len(images_data['data']):
+                    index = 0
+                    for image in images_data['data']:                                                                   # Iterating over images.
+                        try:
+                            text = image['caption']['text']
+                            text = text.encode('utf-8')
+                            text = text.upper()
+                        except:
+                            text = ''
+                        for item1 in disasters:                                                                         # Checking for disaster in every image caption.
+                            if text.find(item1) != -1 and image['id'] not in images:
+                                images.append(image['id'])
+                                download_post(images_data, index)                                                       # Downloading image.
+                                break
+                        index += 1
+    return images
+#.......................................................................................................................
+
+
+
+
 
 #Start of photobot application.
 #.......................................................................................................................
@@ -518,7 +616,7 @@ photobot = True
 
 while photobot:                                                                                                         # Printing application main menu and handling.
     print 'What to you want to do?'
-    selection = take_input('number',' 0. To exit from photobot. \n 1. Print my information.\n 2. Print my user id.\n 3. Download my most recent post.\n 4. Show media recently liked by me.\n 5. Print user information. \n 6. Download user post. \n 7. Like a post. \n 8. Print comments on a post. \n 9. Post a comment. \n 10. Get post with natural calamity.')
+    selection = take_input('number',' 0. To exit from photobot. \n 1. Print my information.\n 2. Print my user id.\n 3. Download my most recent post.\n 4. Show media recently liked by me.\n 5. Print user information. \n 6. Download user post. \n 7. Like a post. \n 8. Print comments on a post. \n 9. Post a comment. \n 10. Get post with natural calamity between coordinates. \n 11. Get post with natural calamity in specific location.')
 
     if selection is not None:
         if selection == 0:
@@ -555,10 +653,15 @@ while photobot:                                                                 
         elif selection == 10:
             images = natural_calamity()
             if images is not None and len(images):
-                print "Images Ids:" ,images
-            else:
-                print (Fore.RED + "No image found with natural calamity.")
+                print (Fore.GREEN + "These images may be of natural calamity, Images Ids:") ,images
                 print (Style.RESET_ALL)
+            if len(images) == 0:
+                print(Fore.RED + "No image found for natural calamity.")
+                print (Style.RESET_ALL)
+        elif selection == 11:
+            images = natural_calamity1()
+            if images is not None and len(images):
+                print "These images may be of natural calamity, Images Ids:" ,images
         else:
             print (Fore.RED + "Please choose form the given options.")
             print (Style.RESET_ALL)
